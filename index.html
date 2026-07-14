@@ -3,401 +3,274 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CrossBorder Ops Workbench</title>
-    <meta
-      name="description"
-      content="A public, privacy-friendly ecommerce operations workbench for marketplace listing fields, unit conversion, color terms, shipment checks, and SOP references."
-    />
+    <title>跨境电商运营工作台</title>
+    <meta name="description" content="A public ecommerce operations workbench for listing fields, warehouse preparation, unit conversion, color terminology, and SOP workflows." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Hanken+Grotesk:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,200..700,0..1,0&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./styles.css" />
     <script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script defer src="./app.js"></script>
   </head>
   <body>
-    <div class="page-shell">
-      <aside class="sidebar" aria-label="Main navigation">
-        <div class="brand">
-          <div class="brand-mark">CB</div>
-          <div>
-            <strong>CrossBorder Ops</strong>
-            <span>Open Workbench</span>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar" aria-label="主导航">
+        <div class="brand-lockup">
+          <div class="brand-mark" aria-hidden="true">CB</div>
+          <div class="brand-copy">
+            <strong>跨境运营工作台</strong>
+            <span>跨境电商效率工具</span>
           </div>
         </div>
+
+        <button class="new-listing-button" type="button" data-view-jump="amazon">
+          <span class="material-symbols-outlined" aria-hidden="true">add</span>
+          新建商品
+        </button>
 
         <nav class="nav-list">
           <a class="nav-item active" href="#dashboard" data-view="dashboard">
-            <span>DB</span>
-            Dashboard
+            <span class="material-symbols-outlined" aria-hidden="true">dashboard</span>
+            <span>工作台首页</span>
           </a>
           <a class="nav-item" href="#amazon" data-view="amazon">
-            <span>AM</span>
-            Amazon Listing
+            <span class="material-symbols-outlined" aria-hidden="true">inventory_2</span>
+            <span>Amazon 建单</span>
           </a>
           <a class="nav-item" href="#walmart" data-view="walmart">
-            <span>WM</span>
-            Walmart Fields
+            <span class="material-symbols-outlined" aria-hidden="true">edit_note</span>
+            <span>Walmart 字段</span>
           </a>
           <a class="nav-item" href="#warehouse" data-view="warehouse">
-            <span>WH</span>
-            Warehouse Prep
+            <span class="material-symbols-outlined" aria-hidden="true">package_2</span>
+            <span>海外仓准备</span>
           </a>
           <a class="nav-item" href="#converter" data-view="converter">
-            <span>CM</span>
-            Unit Converter
+            <span class="material-symbols-outlined" aria-hidden="true">conversion_path</span>
+            <span>单位换算</span>
           </a>
           <a class="nav-item" href="#colors" data-view="colors">
-            <span>CO</span>
-            Color Library
+            <span class="material-symbols-outlined" aria-hidden="true">palette</span>
+            <span>颜色词库</span>
           </a>
           <a class="nav-item" href="#sop" data-view="sop">
-            <span>SP</span>
-            SOP Hub
+            <span class="material-symbols-outlined" aria-hidden="true">menu_book</span>
+            <span>SOP 知识库</span>
           </a>
         </nav>
 
-        <div class="privacy-card">
-          <strong>Public-safe</strong>
-          <p>Files are processed in your browser. This public version does not include private SOPs, real stores, internal paths, or brand data.</p>
+        <div class="sidebar-footer">
+          <button class="profile-button" type="button" id="privacyButton">
+            <span class="profile-avatar"><span class="material-symbols-outlined" aria-hidden="true">shield_person</span></span>
+            <span><strong>公开版工作台</strong><small>文件仅在浏览器处理</small></span>
+          </button>
         </div>
       </aside>
 
-      <main class="workspace">
+      <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+      <main class="main-shell">
         <header class="topbar">
-          <label class="global-search">
-            <span>Search</span>
-            <input id="globalSearch" type="search" placeholder="Search SKU / MSKU / EAN / Shipment ID" />
-          </label>
+          <div class="topbar-leading">
+            <button class="icon-button mobile-menu-button" id="mobileMenuButton" type="button" title="打开菜单" aria-label="打开菜单">
+              <span class="material-symbols-outlined">menu</span>
+            </button>
+            <label class="global-search">
+              <span class="material-symbols-outlined" aria-hidden="true">search</span>
+              <input id="globalSearch" type="search" placeholder="搜索工具、SKU、EAN..." autocomplete="off" />
+            </label>
+          </div>
+          <h1 class="topbar-title">跨境电商运营工作台</h1>
           <div class="topbar-actions">
-            <button class="ghost-button" id="shareGuideButton" type="button">Publish Guide</button>
-            <div class="date-pill" id="todayPill">Today</div>
-            <div class="user-pill">Public</div>
+            <button class="icon-button" id="shareGuideButton" type="button" title="发布指南" aria-label="发布指南">
+              <span class="material-symbols-outlined">cloud_upload</span>
+            </button>
+            <button class="icon-button notification-button" type="button" title="通知" aria-label="通知">
+              <span class="material-symbols-outlined">notifications</span><i></i>
+            </button>
+            <div class="date-pill" id="todayPill">今天</div>
+            <button class="user-avatar" type="button" title="公开版用户" aria-label="公开版用户">公</button>
           </div>
         </header>
 
-        <section class="view active" id="dashboard" aria-labelledby="dashboardTitle">
-          <div class="hero-panel">
-            <div>
-              <span class="eyebrow">Open Ecommerce Toolkit</span>
-              <h1 id="dashboardTitle">Listing work without the spreadsheet fog.</h1>
-              <p>
-                Generate listing fields, normalize units, align color terms, and keep public workflows in one browser workspace.
-              </p>
-              <div class="hero-actions">
-                <button class="primary-button" data-view-jump="amazon" type="button">Start Listing Helper</button>
-                <button class="secondary-button" data-view-jump="converter" type="button">Open Converter</button>
+        <div class="content-canvas">
+          <section class="view active" id="dashboard" aria-labelledby="dashboardTitle">
+            <div class="dashboard-hero">
+              <div class="hero-copy">
+                <span class="section-label">公开版跨境运营工具</span>
+                <h2 id="dashboardTitle">把重复的表格工作，变成清晰可用的流程。</h2>
+                <p>集中生成平台字段、整理产品资料、统一单位与术语，让跨境运营日常工作更快、更稳。</p>
+                <div class="button-row">
+                  <button class="button button-primary" data-view-jump="amazon" type="button">开始商品建单</button>
+                  <button class="button button-secondary" data-view-jump="converter" type="button">打开单位换算</button>
+                </div>
+              </div>
+              <div class="hero-status" aria-label="工作台状态">
+                <div class="status-kicker"><span class="status-dot"></span> 系统可用</div>
+                <div class="hero-status-row"><span>可用模块</span><strong>6 / 6</strong></div>
+                <div class="hero-status-row"><span>文件处理</span><strong>本地</strong></div>
+                <div class="hero-status-row"><span>隐私模式</span><strong>已开启</strong></div>
               </div>
             </div>
-            <div class="hero-visual" aria-hidden="true">
-              <div class="orb orb-a"></div>
-              <div class="orb orb-b"></div>
-              <div class="floating-card card-a">SKU</div>
-              <div class="floating-card card-b">EAN</div>
-              <div class="floating-card card-c">in / lb</div>
+
+            <div class="metric-grid">
+              <article class="metric-card"><span class="metric-icon material-symbols-outlined">task_alt</span><div><small>可用模块</small><strong>6</strong></div><span class="metric-meta">全部可正常使用</span></article>
+              <article class="metric-card"><span class="metric-icon material-symbols-outlined">folder_open</span><div><small>数据处理</small><strong>本地</strong></div><span class="metric-meta">文件不会上传服务器</span></article>
+              <article class="metric-card"><span class="metric-icon material-symbols-outlined">language</span><div><small>Amazon 站点</small><strong>5</strong></div><span class="metric-meta">US · AU · MX · SA · AE</span></article>
+              <article class="metric-card"><span class="metric-icon material-symbols-outlined">verified_user</span><div><small>公开脱敏版</small><strong>开启</strong></div><span class="metric-meta">不包含内部账号资料</span></article>
             </div>
-          </div>
 
-          <div class="metric-grid">
-            <article class="metric-card">
-              <span>Ready Modules</span>
-              <strong>6</strong>
-              <small>Listing, warehouse, units, colors, SOP</small>
-            </article>
-            <article class="metric-card">
-              <span>Privacy Mode</span>
-              <strong>On</strong>
-              <small>No private data bundled</small>
-            </article>
-            <article class="metric-card">
-              <span>Deploy Target</span>
-              <strong>GitHub Pages</strong>
-              <small>Static public website</small>
-            </article>
-            <article class="metric-card">
-              <span>Data Flow</span>
-              <strong>Browser</strong>
-              <small>Local file processing</small>
-            </article>
-          </div>
-
-          <div class="module-grid">
-            <article class="module-card" data-view-jump="amazon">
-              <div class="module-icon">A</div>
-              <h2>Amazon Manual Listing Fields</h2>
-              <p>Upload or paste product rows, then generate common Seller Central fields for single-product listing work.</p>
-            </article>
-            <article class="module-card" data-view-jump="walmart">
-              <div class="module-icon">W</div>
-              <h2>Walmart Copy Fields</h2>
-              <p>Pair EANs with product rows in order and create a compact list of copyable backend fields.</p>
-            </article>
-            <article class="module-card" data-view-jump="warehouse">
-              <div class="module-icon">3P</div>
-              <h2>Warehouse Prep</h2>
-              <p>Prepare product attributes, dimensions, links, import/export price notes, and package checks per SKU.</p>
-            </article>
-            <article class="module-card" data-view-jump="converter">
-              <div class="module-icon">U</div>
-              <h2>Unit Converter</h2>
-              <p>Convert cm, mm, inch, g, kg, and lb for marketplace and warehouse fields.</p>
-            </article>
-            <article class="module-card" data-view-jump="colors">
-              <div class="module-icon">C</div>
-              <h2>Color Library</h2>
-              <p>Use consistent Chinese, English, and Spanish color terms for product titles and attributes.</p>
-            </article>
-            <article class="module-card" data-view-jump="sop">
-              <div class="module-icon">S</div>
-              <h2>SOP Hub</h2>
-              <p>Publish sanitized public workflow cards. Keep private screenshots in a separate private repository.</p>
-            </article>
-          </div>
-        </section>
-
-        <section class="view" id="amazon" aria-labelledby="amazonTitle">
-          <div class="section-header">
-            <div>
-              <span class="eyebrow">Amazon Helper</span>
-              <h1 id="amazonTitle">Single-product listing field generator</h1>
-              <p>Use public-safe product rows to create copy-ready fields. XLSX works online through a browser library; CSV also works.</p>
+            <div class="section-heading-row">
+              <div><span class="section-label">工作台模块</span><h3>选择要处理的工作</h3></div>
+              <span class="section-note">所有工具均在当前浏览器运行</span>
             </div>
-          </div>
 
-          <div class="two-column">
-            <form class="panel input-panel" id="listingForm">
-              <h2>Input</h2>
-              <div class="field-grid">
-                <label>
-                  Marketplace
-                  <select id="marketplaceSelect">
-                    <option value="US">US - United States</option>
-                    <option value="AU" selected>AU - Australia</option>
-                    <option value="MX">MX - Mexico</option>
-                    <option value="SA">SA - Saudi Arabia</option>
-                    <option value="AE">AE - United Arab Emirates</option>
-                  </select>
+            <div class="module-grid">
+              <article class="module-card" data-view-jump="amazon" tabindex="0">
+                <div class="module-card-top"><span class="module-icon material-symbols-outlined">inventory_2</span><span class="module-tag">商品建单</span></div>
+                <h3>Amazon 建单助手</h3><p>上传产品资料表，按不同站点生成可直接复制的单品手动上架字段。</p>
+                <button class="text-link" type="button">打开模块 <span class="material-symbols-outlined">arrow_forward</span></button>
+              </article>
+              <article class="module-card" data-view-jump="walmart" tabindex="0">
+                <div class="module-card-top"><span class="module-icon material-symbols-outlined">edit_note</span><span class="module-tag">EAN 配对</span></div>
+                <h3>Walmart 字段助手</h3><p>按顺序匹配 EAN 与建单产品，生成每个商品对应的后台复制字段。</p>
+                <button class="text-link" type="button">打开模块 <span class="material-symbols-outlined">arrow_forward</span></button>
+              </article>
+              <article class="module-card" data-view-jump="warehouse" tabindex="0">
+                <div class="module-card-top"><span class="module-icon material-symbols-outlined">package_2</span><span class="module-tag">海外仓</span></div>
+                <h3>海外仓资料检查</h3><p>按 SKU 核对属性、包装资料、产品链接、申报价和资料完整度。</p>
+                <button class="text-link" type="button">打开模块 <span class="material-symbols-outlined">arrow_forward</span></button>
+              </article>
+              <article class="module-card" data-view-jump="converter" tabindex="0">
+                <div class="module-card-top"><span class="module-icon material-symbols-outlined">conversion_path</span><span class="module-tag">实用工具</span></div>
+                <h3>单位换算</h3><p>快速换算平台和海外仓常用的长度、尺寸与重量单位。</p>
+                <button class="text-link" type="button">打开模块 <span class="material-symbols-outlined">arrow_forward</span></button>
+              </article>
+              <article class="module-card" data-view-jump="colors" tabindex="0">
+                <div class="module-card-top"><span class="module-icon material-symbols-outlined">palette</span><span class="module-tag">词库参考</span></div>
+                <h3>颜色词库</h3><p>查询常用颜色的中文、英文和西班牙语标准表达。</p>
+                <button class="text-link" type="button">打开模块 <span class="material-symbols-outlined">arrow_forward</span></button>
+              </article>
+              <article class="module-card" data-view-jump="sop" tabindex="0">
+                <div class="module-card-top"><span class="module-icon material-symbols-outlined">menu_book</span><span class="module-tag">知识库</span></div>
+                <h3>SOP 知识库</h3><p>按公开版操作步骤完成资料准备、字段生成、检查和交接。</p>
+                <button class="text-link" type="button">打开模块 <span class="material-symbols-outlined">arrow_forward</span></button>
+              </article>
+            </div>
+          </section>
+
+          <section class="view" id="amazon" aria-labelledby="amazonTitle">
+            <div class="page-header">
+              <div><span class="section-label">单品建单字段生成</span><h2 id="amazonTitle">Amazon 建单助手</h2><p>上传产品资料表，自动整理 Seller Central 常用字段，并逐项提供复制。</p></div>
+              <div class="page-header-badge"><span class="material-symbols-outlined">inventory_2</span><div><small>支持站点</small><strong>5 个站点</strong></div></div>
+            </div>
+            <div class="workspace-grid">
+              <form class="surface-card input-panel" id="listingForm">
+                <div class="card-heading"><div><span class="step-number">01</span><h3>建单设置</h3></div><span class="material-symbols-outlined">tune</span></div>
+                <div class="field-grid">
+                  <label><span>国家 / 站点</span><select id="marketplaceSelect"><option value="US">US · 美国</option><option value="AU" selected>AU · 澳大利亚</option><option value="MX">MX · 墨西哥</option><option value="SA">SA · 沙特</option><option value="AE">AE · 阿联酋</option></select></label>
+                  <label><span>店铺缩写</span><input id="storePrefix" value="CB" maxlength="8" /></label>
+                  <label><span>上线日期</span><input id="launchDate" type="date" value="2027-11-30" /></label>
+                  <label><span>最大订单数量</span><input id="maxOrderQty" type="number" min="1" value="3" /></label>
+                </div>
+                <div class="divider"></div>
+                <div class="card-heading compact-heading"><div><span class="step-number">02</span><h3>产品资料</h3></div></div>
+                <label class="file-drop">
+                  <input id="productFile" type="file" accept=".xlsx,.xls,.csv,.tsv" />
+                  <span class="file-drop-icon material-symbols-outlined">upload_file</span>
+                  <strong>上传产品资料表</strong>
+                  <small>支持 XLSX、XLS、CSV、TSV · 文件仅在当前浏览器处理</small>
                 </label>
-                <label>
-                  Store prefix
-                  <input id="storePrefix" value="CB" maxlength="8" />
-                </label>
-                <label>
-                  Launch date
-                  <input id="launchDate" type="date" value="2027-11-30" />
-                </label>
-                <label>
-                  Max order quantity
-                  <input id="maxOrderQty" type="number" min="1" value="3" />
-                </label>
-              </div>
-
-              <label class="file-drop">
-                <input id="productFile" type="file" accept=".xlsx,.xls,.csv,.tsv" />
-                <span>Upload product sheet</span>
-                <small>Recommended columns: SKU, brand, product name, category, color, material, price, dimensions, weight, link.</small>
-              </label>
-
-              <label>
-                Or paste CSV / tabular rows
-                <textarea id="productPaste" rows="8" spellcheck="false">sku,brand,product_name,category,color,material,price,length,width,height,dimension_unit,weight,weight_unit,package_length,package_width,package_height,package_weight,link
-AUNLH001-S,Northline Home,Kitchen Cutting Board,Kitchen / Dining / Cutting Boards,Gray,Bamboo,19.99,30,20,1.2,cm,800,g,32,22,3,950,https://example.com/product</textarea>
-              </label>
-
-              <div class="button-row">
-                <button class="primary-button" type="submit">Generate Fields</button>
-                <button class="secondary-button" id="clearListing" type="button">Clear</button>
-              </div>
-            </form>
-
-            <div class="panel result-panel">
-              <div class="panel-title-row">
-                <h2>Copy-ready results</h2>
-                <button class="ghost-button" id="copyAllListing" type="button">Copy All</button>
-              </div>
-              <div id="listingResults" class="result-stack empty-state">
-                Upload or paste product rows, then generate fields.
+                <label class="textarea-label"><span>或粘贴 CSV / 表格内容</span><textarea id="productPaste" rows="8" spellcheck="false">sku,brand,product_name,category,color,material,price,length,width,height,dimension_unit,weight,weight_unit,package_length,package_width,package_height,package_weight,link
+AUNLH001-S,Northline Home,Kitchen Cutting Board,Kitchen / Dining / Cutting Boards,Gray,Bamboo,19.99,30,20,1.2,cm,800,g,32,22,3,950,https://example.com/product</textarea></label>
+                <div class="button-row form-actions"><button class="button button-secondary" id="clearListing" type="button">清空</button><button class="button button-primary" type="submit"><span class="material-symbols-outlined">auto_awesome</span> 生成字段</button></div>
+              </form>
+              <div class="surface-card result-panel">
+                <div class="card-heading"><div><span class="step-number">03</span><h3>可复制结果</h3></div><button class="button button-secondary button-small" id="copyAllListing" type="button"><span class="material-symbols-outlined">content_copy</span> 复制全部</button></div>
+                <div id="listingResults" class="result-stack empty-state"><span class="empty-icon material-symbols-outlined">description</span><strong>尚未生成字段</strong><p>上传或粘贴产品资料后，点击“生成字段”。</p></div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <section class="view" id="walmart" aria-labelledby="walmartTitle">
-          <div class="section-header">
-            <div>
-              <span class="eyebrow">Walmart Helper</span>
-              <h1 id="walmartTitle">EAN and product-row pairing</h1>
-              <p>Paste EANs in the same order as your product rows. The page groups each EAN with one product card.</p>
+          <section class="view" id="walmart" aria-labelledby="walmartTitle">
+            <div class="page-header"><div><span class="section-label">EAN 顺序配对</span><h2 id="walmartTitle">Walmart 字段助手</h2><p>按照输入顺序匹配 EAN 与产品资料，每个商品生成一组独立可复制字段。</p></div><div class="page-header-badge"><span class="material-symbols-outlined">edit_note</span><div><small>配对方式</small><strong>按顺序</strong></div></div></div>
+            <div class="workspace-grid">
+              <form class="surface-card input-panel" id="walmartForm">
+                <div class="card-heading"><div><span class="step-number">01</span><h3>EAN 编码</h3></div><span class="material-symbols-outlined">barcode_scanner</span></div>
+                <label class="textarea-label"><span>每行输入一个 EAN</span><textarea id="eanList" rows="8" placeholder="1234567890123&#10;1234567890130"></textarea></label>
+                <div class="divider"></div>
+                <div class="card-heading compact-heading"><div><span class="step-number">02</span><h3>产品资料行</h3></div></div>
+                <label class="textarea-label"><span>粘贴 CSV 或制表符分隔的表格内容</span><textarea id="walmartRows" rows="9" spellcheck="false" placeholder="sku, brand, product_name, category..."></textarea></label>
+                <div class="button-row form-actions"><button class="button button-secondary" type="button" data-fill-demo="walmart">载入示例</button><button class="button button-primary" type="submit"><span class="material-symbols-outlined">link</span> 开始配对</button></div>
+              </form>
+              <div class="surface-card result-panel"><div class="card-heading"><div><span class="step-number">03</span><h3>已配对商品</h3></div><span class="material-symbols-outlined">view_list</span></div><div id="walmartResults" class="result-stack empty-state"><span class="empty-icon material-symbols-outlined">link_off</span><strong>暂无配对商品</strong><p>输入 EAN 和产品资料后即可开始。</p></div></div>
             </div>
-          </div>
-          <div class="two-column">
-            <form class="panel input-panel" id="walmartForm">
-              <h2>Input</h2>
-              <label>
-                EAN list
-                <textarea id="eanList" rows="6" placeholder="One EAN per line"></textarea>
-              </label>
-              <label>
-                Product rows
-                <textarea id="walmartRows" rows="8" spellcheck="false" placeholder="Paste CSV rows here"></textarea>
-              </label>
-              <div class="button-row">
-                <button class="primary-button" type="submit">Pair Rows</button>
-                <button class="secondary-button" type="button" data-fill-demo="walmart">Demo</button>
+          </section>
+
+          <section class="view" id="warehouse" aria-labelledby="warehouseTitle">
+            <div class="page-header"><div><span class="section-label">海外仓资料准备</span><h2 id="warehouseTitle">海外仓资料检查清单</h2><p>按 SKU 核对海外仓交接所需的产品属性、包装资料和限制信息。</p></div><div class="page-header-badge"><span class="material-symbols-outlined">package_2</span><div><small>检查进度</small><strong id="warehouseProgressLabel">0 / 9</strong></div></div></div>
+            <div class="warehouse-layout">
+              <div class="warehouse-column">
+                <article class="surface-card">
+                  <div class="card-heading"><div><span class="step-number">01</span><h3>每个 SKU 单独核对</h3></div><span class="material-symbols-outlined">inventory</span></div>
+                  <div class="check-list" data-check-group="warehouse">
+                    <label class="check-row"><input type="checkbox" /><span class="custom-check material-symbols-outlined">check</span><span><strong>SKU / 商品编码</strong><small>仓库唯一识别编码</small></span></label>
+                    <label class="check-row"><input type="checkbox" /><span class="custom-check material-symbols-outlined">check</span><span><strong>产品名称与申报品名</strong><small>提取清晰的类目关键词</small></span></label>
+                    <label class="check-row"><input type="checkbox" /><span class="custom-check material-symbols-outlined">check</span><span><strong>产品链接</strong><small>每个 SKU 对应自己的产品链接</small></span></label>
+                    <label class="check-row"><input type="checkbox" /><span class="custom-check material-symbols-outlined">check</span><span><strong>材质与颜色</strong><small>每个产品单独确认，不共用默认值</small></span></label>
+                    <label class="check-row"><input type="checkbox" /><span class="custom-check material-symbols-outlined">check</span><span><strong>进口价与出口价</strong><small>按 SKU 分别填写并确认</small></span></label>
+                  </div>
+                </article>
+                <article class="surface-card">
+                  <div class="card-heading"><div><span class="step-number">02</span><h3>包装资料</h3></div><span class="material-symbols-outlined">deployed_code</span></div>
+                  <div class="check-list" data-check-group="warehouse">
+                    <label class="check-row"><input type="checkbox" /><span class="custom-check material-symbols-outlined">check</span><span><strong>包装长、宽、高</strong><small>尺寸与单位必须完整</small></span></label>
+                    <label class="check-row"><input type="checkbox" /><span class="custom-check material-symbols-outlined">check</span><span><strong>包装重量</strong><small>确认毛重和重量单位</small></span></label>
+                    <label class="check-row"><input type="checkbox" /><span class="custom-check material-symbols-outlined">check</span><span><strong>电池 / 化学品状态</strong><small>确认限制属性是否适用</small></span></label>
+                    <label class="check-row"><input type="checkbox" /><span class="custom-check material-symbols-outlined">check</span><span><strong>预包装 / 销售包装</strong><small>选择仓库实际处理方式</small></span></label>
+                  </div>
+                </article>
               </div>
-            </form>
-            <div class="panel result-panel">
-              <h2>Paired cards</h2>
-              <div id="walmartResults" class="result-stack empty-state">No paired products yet.</div>
+              <aside class="warehouse-aside">
+                <article class="surface-card progress-card"><span class="section-label">完成度</span><strong id="warehouseProgressValue">0%</strong><div class="progress-track"><i id="warehouseProgressBar"></i></div><p>完成全部核对后，再把产品资料交接给海外仓运营人员。</p><button class="button button-secondary" id="resetWarehouse" type="button">重置清单</button></article>
+                <article class="surface-card note-card"><span class="material-symbols-outlined">security</span><div><h3>公开版安全提示</h3><p>账号密码、内部定价规则和未脱敏 SOP 截图请保存在私有资料库中。</p></div></article>
+              </aside>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <section class="view" id="warehouse" aria-labelledby="warehouseTitle">
-          <div class="section-header">
-            <div>
-              <span class="eyebrow">Warehouse Prep</span>
-              <h1 id="warehouseTitle">Public SKU attribute checklist</h1>
-              <p>Use this public checklist to review dimensions, weights, product links, material, and per-SKU prices before warehouse setup.</p>
+          <section class="view" id="converter" aria-labelledby="converterTitle">
+            <div class="page-header"><div><span class="section-label">跨境物流实用工具</span><h2 id="converterTitle">单位换算</h2><p>快速换算 Amazon、Walmart、海外仓和物流表格常用的长度与重量单位。</p></div><div class="page-header-badge"><span class="material-symbols-outlined">straighten</span><div><small>结果精度</small><strong>保留两位小数</strong></div></div></div>
+            <div class="converter-layout">
+              <form class="surface-card input-panel" id="converterForm">
+                <div class="card-heading"><div><span class="step-number">01</span><h3>输入数值</h3></div><span class="material-symbols-outlined">calculate</span></div>
+                <div class="converter-section"><span class="field-caption">长度</span><div class="joined-fields"><input id="lengthValue" type="number" step="0.01" min="0" value="45" aria-label="长度数值" /><select id="lengthUnit" aria-label="长度单位"><option value="cm">cm</option><option value="mm">mm</option><option value="in">in</option></select></div></div>
+                <div class="converter-section"><span class="field-caption">重量</span><div class="joined-fields"><input id="weightValue" type="number" step="0.01" min="0" value="1.8" aria-label="重量数值" /><select id="weightUnit" aria-label="重量单位"><option value="kg">kg</option><option value="g">g</option><option value="lb">lb</option></select></div></div>
+                <button class="button button-primary full-button" type="submit"><span class="material-symbols-outlined">sync_alt</span> 开始换算</button>
+              </form>
+              <div class="surface-card result-panel"><div class="card-heading"><div><span class="step-number">02</span><h3>换算结果</h3></div><span class="material-symbols-outlined">data_table</span></div><div id="converterResults" class="result-stack"></div></div>
             </div>
-          </div>
-          <div class="checklist-grid">
-            <article class="panel checklist-card">
-              <h2>Per SKU fields</h2>
-              <ul>
-                <li>SKU / product code</li>
-                <li>Product name and declaration keyword</li>
-                <li>Product link</li>
-                <li>Material and color</li>
-                <li>Import price and export price</li>
-              </ul>
-            </article>
-            <article class="panel checklist-card">
-              <h2>Package fields</h2>
-              <ul>
-                <li>Length, width, height</li>
-                <li>Package weight</li>
-                <li>Battery and chemical status</li>
-                <li>Pre-pack / sale-pack status</li>
-                <li>Missing value reminder</li>
-              </ul>
-            </article>
-            <article class="panel checklist-card">
-              <h2>Public-site note</h2>
-              <p>
-                Keep real templates, private screenshots, and store-specific rules in a private repository. Publish only generalized workflow
-                logic here.
-              </p>
-            </article>
-          </div>
-        </section>
+          </section>
 
-        <section class="view" id="converter" aria-labelledby="converterTitle">
-          <div class="section-header">
-            <div>
-              <span class="eyebrow">Unit Converter</span>
-              <h1 id="converterTitle">Dimensions and weight converter</h1>
-              <p>Convert length and weight units commonly used by marketplaces, 3PL warehouses, and shipping forms.</p>
+          <section class="view" id="colors" aria-labelledby="colorsTitle">
+            <div class="page-header"><div><span class="section-label">跨境电商术语参考</span><h2 id="colorsTitle">颜色词库</h2><p>查询常见产品颜色的中文、英文和西班牙语表达，统一平台字段用词。</p></div><div class="page-header-badge"><span class="material-symbols-outlined">palette</span><div><small>支持语言</small><strong>中 · 英 · 西</strong></div></div></div>
+            <div class="surface-card table-card">
+              <div class="table-toolbar"><div><h3>常用颜色对照</h3><p>搜索会同时匹配三种语言和使用说明。</p></div><label class="table-search"><span class="material-symbols-outlined">search</span><input id="colorFilter" type="search" placeholder="搜索颜色..." /></label></div>
+              <div class="table-wrap"><table><thead><tr><th>中文</th><th>英文</th><th>西班牙语</th><th>使用说明</th></tr></thead><tbody id="colorTable"></tbody></table></div>
             </div>
-          </div>
-          <div class="two-column compact">
-            <form class="panel input-panel" id="converterForm">
-              <h2>Input</h2>
-              <div class="field-grid">
-                <label>
-                  Length
-                  <input id="lengthValue" type="number" step="0.01" value="45" />
-                </label>
-                <label>
-                  Unit
-                  <select id="lengthUnit">
-                    <option value="cm">cm</option>
-                    <option value="mm">mm</option>
-                    <option value="in">in</option>
-                  </select>
-                </label>
-                <label>
-                  Weight
-                  <input id="weightValue" type="number" step="0.01" value="1.8" />
-                </label>
-                <label>
-                  Unit
-                  <select id="weightUnit">
-                    <option value="kg">kg</option>
-                    <option value="g">g</option>
-                    <option value="lb">lb</option>
-                  </select>
-                </label>
-              </div>
-              <button class="primary-button" type="submit">Convert</button>
-            </form>
-            <div class="panel result-panel">
-              <h2>Results</h2>
-              <div id="converterResults" class="result-stack"></div>
-            </div>
-          </div>
-        </section>
+          </section>
 
-        <section class="view" id="colors" aria-labelledby="colorsTitle">
-          <div class="section-header">
-            <div>
-              <span class="eyebrow">Color Library</span>
-              <h1 id="colorsTitle">Chinese, English, and Spanish color terms</h1>
-              <p>Common public color vocabulary for product attributes. Avoid material grades or certification-triggering claims.</p>
+          <section class="view" id="sop" aria-labelledby="sopTitle">
+            <div class="page-header"><div><span class="section-label">标准操作流程知识库</span><h2 id="sopTitle">新品资料准备与上架流程</h2><p>按照公开脱敏版步骤完成产品资料准备、字段生成、检查和交接。</p></div><div class="page-header-badge"><span class="material-symbols-outlined">menu_book</span><div><small>流程步骤</small><strong>4 个阶段</strong></div></div></div>
+            <div class="sop-grid">
+              <article class="surface-card sop-card"><div class="sop-card-heading"><span class="step-number large">1</span><div><small>资料准备</small><h3>整理产品资料</h3></div><span class="material-symbols-outlined">data_object</span></div><p>生成平台内容前，先集中整理产品编码和全部规格资料。</p><ul><li><span class="material-symbols-outlined">check_circle</span>核对 SKU、品牌、类目、颜色和材质。</li><li><span class="material-symbols-outlined">check_circle</span>统一尺寸与重量单位。</li></ul></article>
+              <article class="surface-card sop-card"><div class="sop-card-heading"><span class="step-number large">2</span><div><small>字段生成</small><h3>生成可复制字段</h3></div><span class="material-symbols-outlined">edit_note</span></div><p>只使用已经确认的产品信息，生成对应平台的填写内容。</p><ul><li><span class="material-symbols-outlined">check_circle</span>产品名称清晰并符合实际类目。</li><li><span class="material-symbols-outlined">check_circle</span>保留型号、SKU、数字和单位。</li></ul></article>
+              <article class="surface-card sop-card sop-card-wide"><div class="sop-card-heading"><span class="step-number large">3</span><div><small>检查确认</small><h3>检查合规风险与缺失内容</h3></div><span class="material-symbols-outlined">fact_check</span></div><p>尺寸缺失、不确定描述、限制属性和类目不一致时，必须提示人工确认。</p><div class="sop-tags"><span>尺寸</span><span>材质</span><span>电池</span><span>类目</span></div></article>
+              <article class="surface-card sop-card sop-card-wide"><div class="sop-card-heading"><span class="step-number large">4</span><div><small>资料交接</small><h3>保护内部和客户信息</h3></div><span class="material-symbols-outlined">policy</span></div><p>公开网站仅使用脱敏示例。真实店铺资料、账号截图、私有模板和内部定价规则应保存在私有空间。</p><div class="security-callout"><span class="material-symbols-outlined">lock</span><div><strong>敏感资料保护</strong><small>不要公开账号、令牌、私人路径或客户数据。</small></div></div></article>
             </div>
-          </div>
-          <div class="panel">
-            <label class="table-filter">
-              Filter colors
-              <input id="colorFilter" type="search" placeholder="Search color name" />
-            </label>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>中文</th>
-                    <th>English</th>
-                    <th>Español</th>
-                    <th>Usage note</th>
-                  </tr>
-                </thead>
-                <tbody id="colorTable"></tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        <section class="view" id="sop" aria-labelledby="sopTitle">
-          <div class="section-header">
-            <div>
-              <span class="eyebrow">SOP Hub</span>
-              <h1 id="sopTitle">Public workflow library</h1>
-              <p>Use public workflow cards for shared training. Private screenshots and account-specific steps should stay private.</p>
-            </div>
-          </div>
-          <div class="sop-grid">
-            <article class="panel sop-card">
-              <span>01</span>
-              <h2>Prepare product data</h2>
-              <p>Clean SKU, product name, brand, category, dimensions, weight, color, material, link, and price fields.</p>
-            </article>
-            <article class="panel sop-card">
-              <span>02</span>
-              <h2>Generate copy fields</h2>
-              <p>Use the listing helper to produce backend fields and flag missing information for manual confirmation.</p>
-            </article>
-            <article class="panel sop-card">
-              <span>03</span>
-              <h2>Review compliance fields</h2>
-              <p>Check battery, chemical, dangerous goods, origin, certification, and marketplace-specific restrictions.</p>
-            </article>
-            <article class="panel sop-card">
-              <span>04</span>
-              <h2>Keep private SOP private</h2>
-              <p>Do not publish screenshots containing accounts, store IDs, internal staff names, private SKUs, or supplier data.</p>
-            </article>
-          </div>
-        </section>
+          </section>
+        </div>
       </main>
     </div>
-
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
   </body>
 </html>

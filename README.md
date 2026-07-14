@@ -1,75 +1,55 @@
-# CrossBorder Ops Workbench
+# 跨境电商运营工作台
 
-A public, privacy-friendly ecommerce operations workbench for marketplace listing support.
+这是一个可公开部署、经过脱敏处理的跨境电商运营辅助网站。项目采用纯前端实现，可直接发布到 GitHub Pages，也可以下载后在任意电脑浏览器中使用。
 
-This is the **public website version** of the workbench. It is designed for GitHub Pages and does not include private SOP screenshots, real store data, private product data, internal file paths, account information, or company-specific workflow assets.
+## 已有功能
 
-The interface was redesigned as a public-facing tool site: clean light theme, one consistent blue accent, restrained glass surfaces, stronger spacing, and browser-first workflows.
+- 运营总览：首页集中展示全部工具和处理状态
+- Amazon 建单：上传 CSV、XLSX 或 XLS 建单表格，生成单品后台可复制字段
+- Walmart 字段：按输入顺序匹配 EAN 与产品资料，批量生成常用后台字段
+- 海外仓准备：按步骤核对资料、包装、标签和申报信息
+- 单位换算：支持 cm、mm、in 以及 g、kg、lb 的准确换算
+- 颜色词库：提供常见颜色的中文、英文和西班牙语对照及搜索
+- SOP 知识库：用公开、通用的流程卡片展示操作步骤
 
-## What It Includes
+## 隐私与脱敏
 
-- Dashboard for ecommerce operations modules
-- Amazon single-product listing field helper
-- Walmart EAN and product-row pairing helper
-- Warehouse preparation checklist
-- Unit converter for cm / mm / in and g / kg / lb
-- Chinese / English / Spanish color library
-- Public SOP workflow cards
+表格内容在当前浏览器中解析，静态网站本身不会把文件上传到服务器。
 
-## Privacy Model
+公开仓库中请勿加入以下内容：
 
-This version runs in the browser. Product rows are processed locally by the page and are not uploaded to a server by this static website.
+- 真实店铺、账号、供应商或员工信息
+- 私有 SKU、EAN、报价、产品资料和内部表格
+- 带有后台账号信息的截图
+- 公司内部 SOP 原文件及未脱敏图片
+- API 密钥、密码、令牌和 `.env` 文件
 
-Do not commit private SOP files, screenshots, store IDs, supplier data, account screenshots, private SKUs, or internal documents to a public GitHub repository.
+当前公开版本只使用通用示例数据，不包含个人电脑路径或内部业务资料。
 
-## Supported Files
+## 支持的文件
 
-- CSV / TSV: supported directly in the browser
-- XLSX / XLS: supported through the browser SheetJS CDN when the page is online
+- CSV、TSV：浏览器直接读取
+- XLSX、XLS：联网时通过 SheetJS 在浏览器中读取
 
-For the most stable public deployment, you can export spreadsheets as CSV before uploading.
+如果网络环境不稳定，可先将表格另存为 CSV 后再上传。
 
-## Publish With GitHub Pages
+## 发布到 GitHub Pages
 
-1. Create a new GitHub repository.
-2. Upload these files to the repository root:
-   - `index.html`
-   - `styles.css`
-   - `app.js`
-   - `README.md`
-   - `.nojekyll`
-3. In GitHub, open **Settings > Pages**.
-4. Set **Source** to **Deploy from a branch**.
-5. Select branch `main` and folder `/root`.
-6. Save. GitHub will generate a public URL like:
+1. 在 GitHub 新建一个公开仓库。
+2. 将本项目文件上传到仓库根目录。
+3. 打开仓库的 `Settings`，进入 `Pages`。
+4. 在 `Build and deployment` 中选择 `Deploy from a branch`。
+5. 分支选择 `main`，目录选择 `/root`，然后保存。
+6. GitHub 会生成类似下面的公开网址：
 
 ```text
-https://YOUR-USERNAME.github.io/YOUR-REPOSITORY/
+https://你的用户名.github.io/仓库名称/
 ```
 
-## When You Need a Backend
+## 本地使用
 
-GitHub Pages is static hosting. It is excellent for public UI, copy helpers, converters, and browser-side file parsing.
+直接打开 `index.html` 即可使用大部分功能。读取 XLSX 或 XLS 时建议联网打开，或者通过本地静态服务器运行。
 
-Use a backend later if you need:
+## 后续需要服务器的情况
 
-- Secure user accounts
-- Private SOP storage
-- Large XLSX processing
-- Database history
-- Team permissions
-- Cloud file storage
-- AI model calls with protected API keys
-
-Recommended future stack:
-
-- Frontend: this static site or React
-- Backend: FastAPI / Flask / Node.js
-- Hosting: Render, Railway, Fly.io, Vercel, or a private cloud server
-- Private SOP files: private GitHub repository, Google Drive, or object storage
-
-## Public Data Rule
-
-Before publishing, run a simple text search for private terms and remove anything that should not be public.
-
-This public package intentionally uses generic examples only.
+GitHub Pages 适合当前这种公开的字段生成、换算、词库和本地表格解析工具。如果以后需要登录、多人权限、云端保存、私有 SOP、历史记录或 AI 接口，应再增加受保护的后端服务，不能把密钥直接写进公开网页。
