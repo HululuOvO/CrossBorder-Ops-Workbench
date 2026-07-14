@@ -142,7 +142,7 @@ function setupWalmartTool() {
   document.querySelector('[data-fill-demo="walmart"]').addEventListener("click", () => {
     document.getElementById("eanList").value = "1234567890123\n1234567890130";
     document.getElementById("walmartRows").value =
-      "sku,brand,product_name,category,color,material,price,length,width,height,dimension_unit,weight,weight_unit\nCB001,Example Brand,Kitchen Rack,Home / Storage / Racks,White,Metal,24.99,40,25,15,cm,1.2,kg\nCB002,Sample Goods,Bathroom Shelf,Home / Bath / Shelves,Black,Plastic,18.99,30,12,10,cm,900,g";
+      "sku,brand,product_name,category,color,material,price,length,width,height,dimension_unit,weight,weight_unit\nCB001,Northline Home,Kitchen Rack,Home / Storage / Racks,White,Metal,24.99,40,25,15,cm,1.2,kg\nCB002,Harbor Nest,Bathroom Shelf,Home / Bath / Shelves,Black,Plastic,18.99,30,12,10,cm,900,g";
   });
 }
 

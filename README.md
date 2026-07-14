@@ -4,6 +4,8 @@ A public, privacy-friendly ecommerce operations workbench for marketplace listin
 
 This is the **public website version** of the workbench. It is designed for GitHub Pages and does not include private SOP screenshots, real store data, private product data, internal file paths, account information, or company-specific workflow assets.
 
+The interface was redesigned as a public-facing tool site: clean light theme, one consistent blue accent, restrained glass surfaces, stronger spacing, and browser-first workflows.
+
 ## What It Includes
 
 - Dashboard for ecommerce operations modules
