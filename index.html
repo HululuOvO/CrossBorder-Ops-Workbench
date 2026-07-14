@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CrossBorder Ops Workbench</title>
+    <meta
+      name="description"
+      content="A public, privacy-friendly ecommerce operations workbench for marketplace listing fields, unit conversion, color terms, shipment checks, and SOP references."
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script defer src="./app.js"></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <aside class="sidebar" aria-label="Main navigation">
+        <div class="brand">
+          <div class="brand-mark">CB</div>
+          <div>
+            <strong>CrossBorder Ops</strong>
+            <span>Public Workbench</span>
+          </div>
+        </div>
+
+        <nav class="nav-list">
+          <a class="nav-item active" href="#dashboard" data-view="dashboard">
+            <span>DB</span>
+            Dashboard
+          </a>
+          <a class="nav-item" href="#amazon" data-view="amazon">
+            <span>AM</span>
+            Amazon Listing
+          </a>
+          <a class="nav-item" href="#walmart" data-view="walmart">
+            <span>WM</span>
+            Walmart Fields
+          </a>
+          <a class="nav-item" href="#warehouse" data-view="warehouse">
+            <span>WH</span>
+            Warehouse Prep
+          </a>
+          <a class="nav-item" href="#converter" data-view="converter">
+            <span>CM</span>
+            Unit Converter
+          </a>
+          <a class="nav-item" href="#colors" data-view="colors">
+            <span>CO</span>
+            Color Library
+          </a>
+          <a class="nav-item" href="#sop" data-view="sop">
+            <span>SP</span>
+            SOP Hub
+          </a>
+        </nav>
+
+        <div class="privacy-card">
+          <strong>Privacy-first</strong>
+          <p>Files are processed in your browser. This public version does not include private SOPs, real stores, internal paths, or brand data.</p>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <label class="global-search">
+            <span>Search</span>
+            <input id="globalSearch" type="search" placeholder="Search SKU / MSKU / EAN / Shipment ID" />
+          </label>
+          <div class="topbar-actions">
+            <button class="ghost-button" id="shareGuideButton" type="button">Publish Guide</button>
+            <div class="date-pill" id="todayPill">Today</div>
+            <div class="user-pill">Public</div>
+          </div>
+        </header>
+
+        <section class="view active" id="dashboard" aria-labelledby="dashboardTitle">
+          <div class="hero-panel">
+            <div>
+              <span class="eyebrow">Public Ecommerce Toolkit</span>
+              <h1 id="dashboardTitle">Cross-border operations, cleaner and faster.</h1>
+              <p>
+                Generate copy-ready listing fields, normalize units, keep color terms consistent, and organize SOP steps in one
+                lightweight public website.
+              </p>
+              <div class="hero-actions">
+                <button class="primary-button" data-view-jump="amazon" type="button">Start Listing Helper</button>
+                <button class="secondary-button" data-view-jump="converter" type="button">Open Converter</button>
+              </div>
+            </div>
+            <div class="hero-visual" aria-hidden="true">
+              <div class="orb orb-a"></div>
+              <div class="orb orb-b"></div>
+              <div class="floating-card card-a">SKU</div>
+              <div class="floating-card card-b">EAN</div>
+              <div class="floating-card card-c">in / lb</div>
+            </div>
+          </div>
+
+          <div class="metric-grid">
+            <article class="metric-card">
+              <span>Ready Modules</span>
+              <strong>6</strong>
+              <small>Listing, warehouse, units, colors, SOP</small>
+            </article>
+            <article class="metric-card">
+              <span>Privacy Mode</span>
+              <strong>On</strong>
+              <small>No private data bundled</small>
+            </article>
+            <article class="metric-card">
+              <span>Deploy Target</span>
+              <strong>GitHub Pages</strong>
+              <small>Static public website</small>
+            </article>
+            <article class="metric-card">
+              <span>Data Flow</span>
+              <strong>Browser</strong>
+              <small>Local file processing</small>
+            </article>
+          </div>
+
+          <div class="module-grid">
+            <article class="module-card" data-view-jump="amazon">
+              <div class="module-icon">A</div>
+              <h2>Amazon Manual Listing Fields</h2>
+              <p>Upload or paste product rows, then generate common Seller Central fields for single-product listing work.</p>
+            </article>
+            <article class="module-card" data-view-jump="walmart">
+              <div class="module-icon">W</div>
+              <h2>Walmart Copy Fields</h2>
+              <p>Pair EANs with product rows in order and create a compact list of copyable backend fields.</p>
+            </article>
+            <article class="module-card" data-view-jump="warehouse">
+              <div class="module-icon">3P</div>
+              <h2>Warehouse Prep</h2>
+              <p>Prepare product attributes, dimensions, links, import/export price notes, and package checks per SKU.</p>
+            </article>
+            <article class="module-card" data-view-jump="converter">
+              <div class="module-icon">U</div>
+              <h2>Unit Converter</h2>
+              <p>Convert cm, mm, inch, g, kg, and lb for marketplace and warehouse fields.</p>
+            </article>
+            <article class="module-card" data-view-jump="colors">
+              <div class="module-icon">C</div>
+              <h2>Color Library</h2>
+              <p>Use consistent Chinese, English, and Spanish color terms for product titles and attributes.</p>
+            </article>
+            <article class="module-card" data-view-jump="sop">
+              <div class="module-icon">S</div>
+              <h2>SOP Hub</h2>
+              <p>Publish sanitized public workflow cards. Keep private screenshots in a separate private repository.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="amazon" aria-labelledby="amazonTitle">
+          <div class="section-header">
+            <div>
+              <span class="eyebrow">Amazon Helper</span>
+              <h1 id="amazonTitle">Single-product listing field generator</h1>
+              <p>Use public-safe product rows to create copy-ready fields. XLSX works online through a browser library; CSV also works.</p>
+            </div>
+          </div>
+
+          <div class="two-column">
+            <form class="panel input-panel" id="listingForm">
+              <h2>Input</h2>
+              <div class="field-grid">
+                <label>
+                  Marketplace
+                  <select id="marketplaceSelect">
+                    <option value="US">US - United States</option>
+                    <option value="AU" selected>AU - Australia</option>
+                    <option value="MX">MX - Mexico</option>
+                    <option value="SA">SA - Saudi Arabia</option>
+                    <option value="AE">AE - United Arab Emirates</option>
+                  </select>
+                </label>
+                <label>
+                  Store prefix
+                  <input id="storePrefix" value="CB" maxlength="8" />
+                </label>
+                <label>
+                  Launch date
+                  <input id="launchDate" type="date" value="2027-11-30" />
+                </label>
+                <label>
+                  Max order quantity
+                  <input id="maxOrderQty" type="number" min="1" value="3" />
+                </label>
+              </div>
+
+              <label class="file-drop">
+                <input id="productFile" type="file" accept=".xlsx,.xls,.csv,.tsv" />
+                <span>Upload product sheet</span>
+                <small>Recommended columns: SKU, brand, product name, category, color, material, price, dimensions, weight, link.</small>
+              </label>
+
+              <label>
+                Or paste CSV / tabular rows
+                <textarea id="productPaste" rows="8" spellcheck="false">sku,brand,product_name,category,color,material,price,length,width,height,dimension_unit,weight,weight_unit,package_length,package_width,package_height,package_weight,link
+AUABC001-S,Example Brand,Kitchen Cutting Board,Kitchen / Dining / Cutting Boards,Gray,Bamboo,19.99,30,20,1.2,cm,800,g,32,22,3,950,https://example.com/product</textarea>
+              </label>
+
+              <div class="button-row">
+                <button class="primary-button" type="submit">Generate Fields</button>
+                <button class="secondary-button" id="clearListing" type="button">Clear</button>
+              </div>
+            </form>
+
+            <div class="panel result-panel">
+              <div class="panel-title-row">
+                <h2>Copy-ready results</h2>
+                <button class="ghost-button" id="copyAllListing" type="button">Copy All</button>
+              </div>
+              <div id="listingResults" class="result-stack empty-state">
+                Upload or paste product rows, then generate fields.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="walmart" aria-labelledby="walmartTitle">
+          <div class="section-header">
+            <div>
+              <span class="eyebrow">Walmart Helper</span>
+              <h1 id="walmartTitle">EAN and product-row pairing</h1>
+              <p>Paste EANs in the same order as your product rows. The page groups each EAN with one product card.</p>
+            </div>
+          </div>
+          <div class="two-column">
+            <form class="panel input-panel" id="walmartForm">
+              <h2>Input</h2>
+              <label>
+                EAN list
+                <textarea id="eanList" rows="6" placeholder="One EAN per line"></textarea>
+              </label>
+              <label>
+                Product rows
+                <textarea id="walmartRows" rows="8" spellcheck="false" placeholder="Paste CSV rows here"></textarea>
+              </label>
+              <div class="button-row">
+                <button class="primary-button" type="submit">Pair Rows</button>
+                <button class="secondary-button" type="button" data-fill-demo="walmart">Demo</button>
+              </div>
+            </form>
+            <div class="panel result-panel">
+              <h2>Paired cards</h2>
+              <div id="walmartResults" class="result-stack empty-state">No paired products yet.</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="warehouse" aria-labelledby="warehouseTitle">
+          <div class="section-header">
+            <div>
+              <span class="eyebrow">Warehouse Prep</span>
+              <h1 id="warehouseTitle">Public SKU attribute checklist</h1>
+              <p>Use this public checklist to review dimensions, weights, product links, material, and per-SKU prices before warehouse setup.</p>
+            </div>
+          </div>
+          <div class="checklist-grid">
+            <article class="panel checklist-card">
+              <h2>Per SKU fields</h2>
+              <ul>
+                <li>SKU / product code</li>
+                <li>Product name and declaration keyword</li>
+                <li>Product link</li>
+                <li>Material and color</li>
+                <li>Import price and export price</li>
+              </ul>
+            </article>
+            <article class="panel checklist-card">
+              <h2>Package fields</h2>
+              <ul>
+                <li>Length, width, height</li>
+                <li>Package weight</li>
+                <li>Battery and chemical status</li>
+                <li>Pre-pack / sale-pack status</li>
+                <li>Missing value reminder</li>
+              </ul>
+            </article>
+            <article class="panel checklist-card">
+              <h2>Public-site note</h2>
+              <p>
+                Keep real templates, private screenshots, and store-specific rules in a private repository. Publish only generalized workflow
+                logic here.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="converter" aria-labelledby="converterTitle">
+          <div class="section-header">
+            <div>
+              <span class="eyebrow">Unit Converter</span>
+              <h1 id="converterTitle">Dimensions and weight converter</h1>
+              <p>Convert length and weight units commonly used by marketplaces, 3PL warehouses, and shipping forms.</p>
+            </div>
+          </div>
+          <div class="two-column compact">
+            <form class="panel input-panel" id="converterForm">
+              <h2>Input</h2>
+              <div class="field-grid">
+                <label>
+                  Length
+                  <input id="lengthValue" type="number" step="0.01" value="45" />
+                </label>
+                <label>
+                  Unit
+                  <select id="lengthUnit">
+                    <option value="cm">cm</option>
+                    <option value="mm">mm</option>
+                    <option value="in">in</option>
+                  </select>
+                </label>
+                <label>
+                  Weight
+                  <input id="weightValue" type="number" step="0.01" value="1.8" />
+                </label>
+                <label>
+                  Unit
+                  <select id="weightUnit">
+                    <option value="kg">kg</option>
+                    <option value="g">g</option>
+                    <option value="lb">lb</option>
+                  </select>
+                </label>
+              </div>
+              <button class="primary-button" type="submit">Convert</button>
+            </form>
+            <div class="panel result-panel">
+              <h2>Results</h2>
+              <div id="converterResults" class="result-stack"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="colors" aria-labelledby="colorsTitle">
+          <div class="section-header">
+            <div>
+              <span class="eyebrow">Color Library</span>
+              <h1 id="colorsTitle">Chinese, English, and Spanish color terms</h1>
+              <p>Common public color vocabulary for product attributes. Avoid material grades or certification-triggering claims.</p>
+            </div>
+          </div>
+          <div class="panel">
+            <label class="table-filter">
+              Filter colors
+              <input id="colorFilter" type="search" placeholder="Search color name" />
+            </label>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>中文</th>
+                    <th>English</th>
+                    <th>Español</th>
+                    <th>Usage note</th>
+                  </tr>
+                </thead>
+                <tbody id="colorTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="sop" aria-labelledby="sopTitle">
+          <div class="section-header">
+            <div>
+              <span class="eyebrow">SOP Hub</span>
+              <h1 id="sopTitle">Public workflow library</h1>
+              <p>Use public workflow cards for shared training. Private screenshots and account-specific steps should stay private.</p>
+            </div>
+          </div>
+          <div class="sop-grid">
+            <article class="panel sop-card">
+              <span>01</span>
+              <h2>Prepare product data</h2>
+              <p>Clean SKU, product name, brand, category, dimensions, weight, color, material, link, and price fields.</p>
+            </article>
+            <article class="panel sop-card">
+              <span>02</span>
+              <h2>Generate copy fields</h2>
+              <p>Use the listing helper to produce backend fields and flag missing information for manual confirmation.</p>
+            </article>
+            <article class="panel sop-card">
+              <span>03</span>
+              <h2>Review compliance fields</h2>
+              <p>Check battery, chemical, dangerous goods, origin, certification, and marketplace-specific restrictions.</p>
+            </article>
+            <article class="panel sop-card">
+              <span>04</span>
+              <h2>Keep private SOP private</h2>
+              <p>Do not publish screenshots containing accounts, store IDs, internal staff names, private SKUs, or supplier data.</p>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
